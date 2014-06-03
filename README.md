@@ -3,6 +3,10 @@ autoProxy
 
 A simple sh script to detect and configure proxy if needed when a terminal is started.
 
+default settings
+=========
+Default proxy setting is Universite de Technologie de Compiegne (UTC) : proxyweb.utc.fr
+
 installation
 -----------
 - add following line to ~/.bashrc or equivalent :
