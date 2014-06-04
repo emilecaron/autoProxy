@@ -1,36 +1,34 @@
  #!/bin/bash
 
-assignProxy(){
-    PROXY_ENV="http_proxy ftp_proxy https_proxy all_proxy no_proxy HTTP_PROXY HTTPS_PROXY FTP_PROXY NO_PROXY ALL_PROXY"
-	for envar in $PROXY_ENV
-    do
-	    export $envar=$1
-	done
-}
-
-clrProxy(){
-assignProxy "" # This is what 'unset' does.
-}
-
-toggleProxy(){
-    proxy_value="http://proxyweb.utc.fr:3128"
-
-    if [ "$http_proxy" = "" ] ; then
-        echo "Setting proxy"
-        assignProxy $proxy_value  
-    else
-        echo "Unsetting proxy"
-        clrProxy
-    fi
-
-}
-
 main(){
+    
+    export http_proxy=""
+    export https_proxy=""
+
     result=`HEAD -d -t 1 http://www.google.fr:80`
+
     if [ ! "$result" = "200 OK" ];then
-        proxy_value="http://proxyweb.utc.fr:3128"
-        assignProxy $proxy_value
-        echo "Proxy was turned on"
+        http_proxy_value="http://proxyweb.utc.fr:3128"
+        https_proxy_value="https://proxyweb.utc.fr:3128"
+        
+        export http_proxy=$http_proxy_value  
+        export https_proxy=$https_proxy_value  
+        
+        echo "No connection, trying proxy..."
+
+        result=`HEAD -d -t 1 http://www.google.fr:80`
+        if [ ! "$result" = "200 OK" ];then
+            
+            export http_proxy=""
+            export https_proxy=""
+            
+            echo "failed"
+            return
+        else
+            echo "success"
+        fi
+    else:
+        echo "Connection ok"
     fi
 }
 
